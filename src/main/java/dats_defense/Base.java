@@ -1,5 +1,6 @@
 package dats_defense;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class Base {
@@ -42,5 +43,17 @@ public class Base {
 
     public int getY() {
         return y;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Base base)) return false;
+        return Objects.equals(id, base.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

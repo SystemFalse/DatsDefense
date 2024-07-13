@@ -8,7 +8,7 @@ import java.util.List;
 
 public class UnitsResponse {
     List<Base> base;
-    List<Player> enemyBlocks;
+    List<EnemyBlock> enemyBlocks;
     Player player;
     String realmName;
     int turn;
@@ -19,7 +19,7 @@ public class UnitsResponse {
         return base;
     }
 
-    public List<Player> getEnemyBlocks() {
+    public List<EnemyBlock> getEnemyBlocks() {
         return enemyBlocks;
     }
 
@@ -60,7 +60,7 @@ public class UnitsResponse {
                 JsonArray enemyBlocks = json.getAsJsonObject().getAsJsonArray("enemyBlocks");
                 response.enemyBlocks = new ArrayList<>(enemyBlocks.size());
                 for (JsonElement e : enemyBlocks) {
-                    response.enemyBlocks.add(context.deserialize(e, Player.class));
+                    response.enemyBlocks.add(context.deserialize(e, EnemyBlock.class));
                 }
             } else {
                 response.enemyBlocks = List.of();

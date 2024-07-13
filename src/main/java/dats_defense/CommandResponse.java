@@ -23,11 +23,19 @@ public class CommandResponse {
         public CommandResponse deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             CommandResponse response = new CommandResponse();
             JsonElement acceptedCommands = json.getAsJsonObject().get("acceptedCommands");
-            response.acceptedCommands = context.deserialize(acceptedCommands, CommandRequest.class);
-            JsonArray errors = json.getAsJsonObject().getAsJsonArray("errors");
-            response.errors = new ArrayList<>();
-            for (JsonElement error : errors) {
-                response.errors.add(error.getAsString());
+            if (!acceptedCommands.isJsonNull()) {
+                response.acceptedCommands = context.deserialize(acceptedCommands, CommandRequest.class);
+            } else {
+                response.acceptedCommands = new CommandRequest();
+            }
+            if (json.getAsJsonObject().has("errors") && !json.getAsJsonObject().get("errors").isJsonNull()) {
+                JsonArray errors = json.getAsJsonObject().getAsJsonArray("errors");
+                response.errors = new ArrayList<>();
+                for (JsonElement error : errors) {
+                    response.errors.add(error.getAsString());
+                }
+            } else {
+                response.errors = new ArrayList<>();
             }
             return response;
         }

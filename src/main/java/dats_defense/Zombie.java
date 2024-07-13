@@ -19,4 +19,40 @@ public class Zombie {
     int waitTurns;
     int x;
     int y;
+
+    public int getAttack() {
+        return attack;
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public ZombieType getType() {
+        return type;
+    }
+
+    public int getWaitTurns() {
+        return waitTurns;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
 }

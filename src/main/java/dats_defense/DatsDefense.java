@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 
 public class DatsDefense {
     public static final URL COMMAND_URL;
@@ -18,11 +19,11 @@ public class DatsDefense {
 
     static {
         try {
-            COMMAND_URL = URI.create("https://games-test.datsteam.dev/play/zombidef/command").toURL();
-            PARTICIPATE_URL = URI.create("https://games-test.datsteam.dev/play/zombidef/participate").toURL();
-            UNITS_URL = URI.create("https://games-test.datsteam.dev/play/zombidef/units").toURL();
-            WORLD_URL = URI.create("https://games-test.datsteam.dev/play/zombidef/world").toURL();
-            ZOMDIDEF_URL = URI.create("https://games-test.datsteam.dev/rounds/zombidef").toURL();
+            COMMAND_URL = URI.create("https://games.datsteam.dev/play/zombidef/command").toURL();
+            PARTICIPATE_URL = URI.create("https://games.datsteam.dev/play/zombidef/participate").toURL();
+            UNITS_URL = URI.create("https://games.datsteam.dev/play/zombidef/units").toURL();
+            WORLD_URL = URI.create("https://games.datsteam.dev/play/zombidef/world").toURL();
+            ZOMDIDEF_URL = URI.create("https://games.datsteam.dev/rounds/zombidef").toURL();
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
@@ -40,8 +41,8 @@ public class DatsDefense {
 //        System.out.println("Zombiedef: " + GSON.toJson(zombiedef));
 
 //        putParticipate();
-        System.out.println("World: " + GSON.toJson(getWorld()));
         System.out.println("Units: " + GSON.toJson(getUnits()));
+        System.out.println("World: " + GSON.toJson(getWorld()));
     }
 
     public static CommandResponse postCommand(CommandRequest request) throws IOException {
@@ -50,17 +51,17 @@ public class DatsDefense {
         con.addRequestProperty("X-Auth-Token", "6690bdb9ca7b86690bdb9ca7bc");
         con.addRequestProperty("Content-Type", "application/json");
         con.setDoOutput(true);
+        con.getOutputStream().write(GSON.toJson(request).getBytes(StandardCharsets.UTF_8));
         checkCode(con);
         return GSON.fromJson(new InputStreamReader(con.getInputStream()), CommandResponse.class);
     }
 
-    public static int putParticipate() throws IOException {
+    public static void putParticipate() throws IOException {
         HttpURLConnection con = (HttpURLConnection) PARTICIPATE_URL.openConnection();
         con.setRequestMethod("PUT");
         con.addRequestProperty("X-Auth-Token", "6690bdb9ca7b86690bdb9ca7bc");
         con.addRequestProperty("Content-Type", "application/json");
         checkCode(con);
-        return con.getResponseCode();
     }
 
     public static WorldResponse getWorld() throws IOException {
@@ -91,7 +92,7 @@ public class DatsDefense {
         int code = con.getResponseCode();
         if (code != 200) {
             Error error = GSON.fromJson(new InputStreamReader(con.getErrorStream()), Error.class);
-            throw new RuntimeException(error.getError());
+            throw new IOException(code + ": " + error.getError());
         }
     }
 }

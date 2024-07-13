@@ -9,12 +9,11 @@ import java.util.List;
 public class CommandRequest {
     List<Attack> attack;
     List<Point> build;
-    List<Point> moveBase;
+    Point moveBase;
 
     public CommandRequest() {
         attack = new ArrayList<>();
         build = new ArrayList<>();
-        moveBase = new ArrayList<>();
     }
 
     public List<Attack> getAttack() {
@@ -25,7 +24,7 @@ public class CommandRequest {
         return build;
     }
 
-    public List<Point> getMoveBase() {
+    public Point getMoveBase() {
         return moveBase;
     }
 
@@ -52,13 +51,9 @@ public class CommandRequest {
                 request.build = List.of();
             }
             if (json.getAsJsonObject().has("moveBase") && !json.getAsJsonObject().get("moveBase").isJsonNull()) {
-                JsonArray moveBase = json.getAsJsonObject().getAsJsonArray("moveBase");
-                request.moveBase = new ArrayList<>(moveBase.size());
-                for (JsonElement e : moveBase) {
-                    request.moveBase.add(context.deserialize(e, Point.class));
-                }
+                request.moveBase = context.deserialize(json.getAsJsonObject().get("moveBase"), Point.class);
             } else {
-                request.moveBase = List.of();
+                request.moveBase = null;
             }
             return request;
         }
